@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
 import preprocessor, helper
 import plotly.express as px
 import matplotlib.pyplot as plt
@@ -10,8 +13,8 @@ st.set_page_config(page_title="Olympics Analysis", layout="wide")
 # ---------------- LOAD DATA ----------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv('athlete_events.csv')
-    region_df = pd.read_csv('noc_regions.csv')
+    df = pd.read_csv('data/athlete_events.csv')
+    region_df = pd.read_csv('data/noc_regions.csv')
     return preprocessor.preprocess(df, region_df)
 
 df = load_data()
