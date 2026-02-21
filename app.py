@@ -42,7 +42,7 @@ st.sidebar.image('https://e7.pngegg.com/pngimages/1020/402/png-clipart-2024-summ
 
 menu = st.sidebar.radio(
     'Select an Option',
-    ('Medal Tally', 'Overall Analysis', 'Country-wise Analysis', 'Athlete wise Analysis', 'Prediction')
+    ('Medal Tally', 'Overall Analysis', 'Country-wise Analysis', 'Athlete wise Analysis')
 )
 
 # ---------------- MEDAL TALLY ----------------
@@ -134,25 +134,3 @@ elif menu == 'Athlete wise Analysis':
     st.subheader("Men vs Women Participation")
     final = helper.men_vs_women(df)
     st.plotly_chart(px.line(final, x="Year", y=["Male", "Female"]))
-
-# ---------------- PREDICTION ----------------
-elif menu == 'Prediction':
-    st.header("Athlete Medal Prediction")
-
-    if model is None:
-        st.error("Model not found. Train and save model.pkl in /models folder.")
-    else:
-        age = st.slider("Age", 10, 60)
-        height = st.slider("Height (cm)", 140, 220)
-        weight = st.slider("Weight (kg)", 40, 120)
-        sex = st.selectbox("Sex", ["M", "F"])
-
-        sex_M = 1 if sex == "M" else 0
-
-        if st.button("Predict"):
-            pred = model.predict([[age, height, weight, sex_M]])
-
-            if pred[0] == 1:
-                st.success("🏅 Likely to win a medal")
-            else:
-                st.warning("No medal predicted")
