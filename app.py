@@ -2,24 +2,27 @@ import streamlit as st
 import pandas as pd
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent / 'src'))
-import preprocessor, helper
 import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Setup path for imports
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
+import preprocessor, helper
+
+# Page config
 st.set_page_config(page_title="Olympics Analysis", layout="wide")
 
-# ---------------- LOAD DATA ----------------
+# Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('data/athlete_events.csv')
-    region_df = pd.read_csv('data/noc_regions.csv')
+    df = pd.read_csv(Path(__file__).parent / 'data' / 'athlete_events.csv')
+    region_df = pd.read_csv(Path(__file__).parent / 'data' / 'noc_regions.csv')
     return preprocessor.preprocess(df, region_df)
 
 df = load_data()
 
-# ---------------- SIDEBAR ----------------
+# Sidebar
 st.sidebar.title("Olympics Analysis")
 st.sidebar.image('https://e7.pngegg.com/pngimages/1020/402/png-clipart-2024-summer-olympics-brand-circle-area-olympic-rings-olympics-logo-text-sport.png')
 
@@ -28,7 +31,7 @@ menu = st.sidebar.radio(
     ('Medal Tally', 'Overall Analysis', 'Country-wise Analysis', 'Athlete wise Analysis')
 )
 
-# ---------------- MEDAL TALLY ----------------
+# Medal Tally
 if menu == 'Medal Tally':
     st.title("Medal Tally")
 
@@ -40,7 +43,7 @@ if menu == 'Medal Tally':
     result = helper.fetch_medal_tally(df, selected_year, selected_country)
     st.dataframe(result)
 
-# ---------------- OVERALL ANALYSIS ----------------
+# Overall Analysis
 elif menu == 'Overall Analysis':
     st.title("Top Statistics")
 
@@ -72,7 +75,7 @@ elif menu == 'Overall Analysis':
     sport = st.selectbox('Select Sport', ['Overall'] + sorted(df['Sport'].unique()))
     st.dataframe(helper.most_successful(df, sport))
 
-# ---------------- COUNTRY ANALYSIS ----------------
+# Country Analysis
 elif menu == 'Country-wise Analysis':
     st.title("Country Analysis")
 
@@ -90,7 +93,7 @@ elif menu == 'Country-wise Analysis':
     st.title("Top Athletes")
     st.dataframe(helper.most_successful_countrywise(df, country))
 
-# ---------------- ATHLETE ANALYSIS ----------------
+# Athlete Analysis
 elif menu == 'Athlete wise Analysis':
     st.title("Athlete Analysis")
 
